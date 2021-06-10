@@ -5,6 +5,7 @@ import com.example.test.api.data.model.common.ErrorArrayResponse;
 import com.example.test.api.data.model.common.ErrorResponse;
 import com.example.test.api.data.model.common.ResponseHelper;
 import com.google.gson.*;
+import com.google.gson.annotations.SerializedName;
 import groovy.util.MapEntry;
 import org.testng.Assert;
 
@@ -75,11 +76,11 @@ public class GsonFunctions {
         for (Field field : fieldList) {
             if (field.isAnnotationPresent(ResponseRequiredField.class)) {
                 if (!field.getAnnotation(ResponseRequiredField.class).canBeEmpty()) {
-                    reqFieldMissingValue.add(field.getName());
+                    reqFieldMissingValue.add(field.getAnnotation(SerializedName.class).value());
                 }
-                classRequiredFields.add(field.getName());
+                classRequiredFields.add(field.getAnnotation(SerializedName.class).value());
             }
-            classFields.add(field.getName());
+            classFields.add(field.getAnnotation(SerializedName.class).value());
         }
 
         Field field = null;
@@ -89,7 +90,7 @@ public class GsonFunctions {
                     unknownFields.add("Model " + modeledClass.getCanonicalName() + " does not contain property " + property.getKey());
                 } else {
                     for (Field f : fieldList) {
-                        if (f.getName().equals(property.getKey())) {
+                        if (f.getAnnotation(SerializedName.class).value().equals(property.getKey())) {
                             field = f;
                             break;
                         }
