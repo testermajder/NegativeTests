@@ -24,7 +24,7 @@ public class ExampleRequest {
     @Expose
     private ObjectValue objectValue;
 
-    ExampleRequest() {
+    public ExampleRequest() {
     }
 
     public ExampleRequest(String stringValue, Boolean booleanValue, Integer intValue, List<String> listValue, ObjectValue objectValue) {
