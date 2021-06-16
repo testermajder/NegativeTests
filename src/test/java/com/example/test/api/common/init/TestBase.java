@@ -29,11 +29,9 @@ public class TestBase implements ITest {
     public void beforeSuite(ITestContext context) {
         RestAssured.baseURI = ConfigSetup.getBaseURL();
     }
-
-    //    Use to log request and response of failed test inside editor's console
+    
     @BeforeClass(groups = {"integration", "regression", "smoke", "knownBugs"})
     public void beforeClass() {
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
     // Used for allure reports to read fist param from test data
