@@ -12,7 +12,7 @@ import java.util.List;
 
 //Model of response created with online tool http://www.jsonschema2pojo.org/
 //Always main model should implement ResponseHelper in order to be able to know that serialization failed
-public class ExampleResponse implements Serializable, ResponseHelper {
+public class ExampleResponse implements Serializable {
 
     @SerializedName("stringValue")
     // our custom annotation to mark this field as required - used for Integration tests
@@ -129,11 +129,5 @@ public class ExampleResponse implements Serializable, ResponseHelper {
         return new ToStringBuilder(this).append("stringValue", stringValue).append("booleanValue", booleanValue).
                 append("intValue", intValue).append("listValue", listValue).append("objectValue", objectValue).
                 append("listOfObjects", listOfObjects).toString();
-    }
-
-    @Override
-    public boolean isResponseNull() {
-        return stringValue == null && booleanValue == null && intValue == null && listValue == null && objectValue == null &&
-                listOfObjects == null;
     }
 }

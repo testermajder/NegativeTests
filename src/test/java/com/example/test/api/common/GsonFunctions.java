@@ -3,10 +3,10 @@ package com.example.test.api.common;
 import com.example.test.api.annotations.ResponseRequiredField;
 import com.example.test.api.data.model.common.ErrorArrayResponse;
 import com.example.test.api.data.model.common.ErrorResponse;
-import com.example.test.api.data.model.common.ResponseHelper;
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
 import groovy.util.MapEntry;
+import io.restassured.response.Response;
 import org.testng.Assert;
 
 import java.lang.reflect.Field;
@@ -35,12 +35,13 @@ public class GsonFunctions {
     }
 
     //    Verify response of deserialized json object into gson model
-    public static ResponseValidation verifyResponse(String jsonResponse, Class modeledClass){
+    public static ResponseValidation verifyResponse(Response jsonResponse, Class modeledClass){
         ResponseValidation responseValidation = new ResponseValidation();
-        JsonElement jsonElement = new JsonParser().parse(jsonResponse);
+        String json = jsonResponse.body().asString();
+        JsonElement jsonElement = new JsonParser().parse(json);
         if (jsonElement.isJsonArray()) {
             GsonFunctions.parseSuccessResponseAsListToModel(jsonResponse, modeledClass);
-            JsonArray jsonArray = new JsonParser().parse(jsonResponse).getAsJsonArray();
+            JsonArray jsonArray = new JsonParser().parse(json).getAsJsonArray();
             for (int i = 0; i < jsonArray.size(); i++) {
                 ResponseValidation responseValidationTemp = GsonFunctions.verifyResponse(jsonArray.get(i).getAsJsonObject(), modeledClass.getComponentType());
                 responseValidation.getClassRequiredFields().addAll(responseValidationTemp.getClassRequiredFields());
@@ -179,38 +180,36 @@ public class GsonFunctions {
         return  wrongTypeFields;
     }
 
-    public static <T> T parseSuccessResponseToModel(String json, Class<T> classOfT) {
-        String prettyJsonString = new GsonBuilder().setPrettyPrinting().create().toJson(new JsonParser().parse(json));
+    public static <T> T parseSuccessResponseToModel(Response jsonResponse, Class<T> classOfT) {
+        String json = jsonResponse.body().asString();
+        String prettyJsonString = "";
         try {
-            T model = new Gson().fromJson(prettyJsonString, (Type) classOfT);
-            if (((ResponseHelper) model).isResponseNull()) {
-                Assert.fail("Endpoint for processing " + classOfT + "\n return error: " + prettyJsonString
-                );
+            prettyJsonString = new GsonBuilder().setPrettyPrinting().create().toJson(new JsonParser().parse(json));
+            if (jsonResponse.getStatusCode() >= 400 && jsonResponse.getStatusCode() < 600) {
+                Assert.fail("Endpoint for processing " + classOfT + "\n return error: " + prettyJsonString);
             } else {
-                return (T) model;
+                return (T) new Gson().fromJson(prettyJsonString, (Type) classOfT);
             }
         } catch (JsonSyntaxException|IllegalStateException e) {
             Assert.fail("Endpoint for processing " + classOfT + "\n return error: " + prettyJsonString
-                    + "\n serialization exception error: " + e.getMessage()
-            );
+                    + "\n serialization exception error: " + e.getMessage());
         }
         return null;
     }
 
-    public static <T> List<T> parseSuccessResponseAsListToModel(String json, Class<T[]> classOfT) {
-        String prettyJsonString = new GsonBuilder().setPrettyPrinting().create().toJson(new JsonParser().parse(json));
+    public static <T> List<T> parseSuccessResponseAsListToModel(Response jsonResponse, Class<T[]> classOfT) {
+        String json = jsonResponse.body().asString();
+        String prettyJsonString = "";
         try {
-            List<T> model = Arrays.asList(new Gson().fromJson(prettyJsonString, (Type) classOfT));
-            if (((ResponseHelper) model.get(0)).isResponseNull()) {
-                Assert.fail("Endpoint for processing " + classOfT + "\n return error: " + prettyJsonString
-                );
+            prettyJsonString = new GsonBuilder().setPrettyPrinting().create().toJson(new JsonParser().parse(json));
+            if (jsonResponse.getStatusCode() >= 400 && jsonResponse.getStatusCode() < 600) {
+                Assert.fail("Endpoint for processing " + classOfT + "\n return error: " + prettyJsonString);
             } else {
-                return model;
+                return Arrays.asList(new Gson().fromJson(prettyJsonString, (Type) classOfT));
             }
         } catch (JsonSyntaxException|IllegalStateException e) {
-            Assert.fail("Endpoint for processing " + classOfT + "\n return error: " + prettyJsonString
-                    + "\n serialization exception error: " + e.getMessage()
-            );
+            Assert.fail("Endpoint for processing " + classOfT + "\n return error: " + prettyJsonString +
+                    "\n serialization exception error: " + e.getMessage());
         }
         return null;
     }
