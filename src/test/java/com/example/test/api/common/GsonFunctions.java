@@ -67,7 +67,7 @@ public class GsonFunctions {
             Field[] fields = modClass.getDeclaredFields();
             for (int j = 0; j < fields.length; j++) {
                 if (!Modifier.isStatic(fields[j].getModifiers()) && !Modifier.isFinal(fields[j].getModifiers())
-                        && !modClass.getSimpleName().equals("ErrResponse")) {
+                        && !modClass.getSimpleName().equals("ErrResponse") && fields[j].isAnnotationPresent(SerializedName.class)) {
                     Collections.addAll(fieldList, fields[j]);
                 }
             }
@@ -98,7 +98,23 @@ public class GsonFunctions {
                     }
                     Class fieldTypeClass = field.getType();
                     if (!fieldTypeClass.isPrimitive() && (property.getValue().isJsonObject())) {
-                        verifyResponse(property.getValue().getAsJsonObject(), fieldTypeClass);
+                        if (fieldTypeClass.equals(Map.class)) {
+                            Class classOfKey = (Class<?>) (((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0]);
+                            wrongTypeFields.addAll(verifyType(property, classOfKey, field.getType()));
+                            Type mapValueType = (((ParameterizedType) field.getGenericType()).getActualTypeArguments()[1]);
+                            if (mapValueType.getTypeName().contains("java.util.List<")) {
+                                fieldTypeClass = (Class<?>) (((ParameterizedType) mapValueType).getActualTypeArguments()[0]);
+                            } else {
+                                fieldTypeClass = (Class<?>) mapValueType;
+                            }
+                            for (Map.Entry<String, JsonElement> entry : property.getValue().getAsJsonObject().entrySet()) {
+                                for (JsonElement json : entry.getValue().getAsJsonArray()) {
+                                    verifyResponse(json.getAsJsonObject(), fieldTypeClass);
+                                }
+                            }
+                        } else {
+                            verifyResponse(property.getValue().getAsJsonObject(), fieldTypeClass);
+                        }
                     } else {
                         if (!property.getValue().isJsonNull()) {
                             if (property.getValue().isJsonArray()) {
@@ -149,6 +165,12 @@ public class GsonFunctions {
                     verifyType(childProperty, modeledClass, rootClass);
                 }
             }
+        } else if (rootClass.equals(Map.class)) {
+            property.getValue().getAsJsonObject().keySet().forEach(keyStr ->
+            {
+                Map.Entry<String, JsonElement> childProperty = new MapEntry(keyStr, new JsonPrimitive(keyStr));
+                wrongTypeFields.addAll(checkType(childProperty, modeledClass, rootClass));
+            });
         } else {
             wrongTypeFields.addAll(checkType(property, modeledClass, rootClass));
         }
@@ -188,7 +210,7 @@ public class GsonFunctions {
             if (jsonResponse.getStatusCode() >= 400 && jsonResponse.getStatusCode() < 600) {
                 Assert.fail("Endpoint for processing " + classOfT + "\n return error: " + prettyJsonString);
             } else {
-                return (T) new Gson().fromJson(prettyJsonString, (Type) classOfT);
+                return new Gson().fromJson(prettyJsonString, (Type) classOfT);
             }
         } catch (JsonSyntaxException|IllegalStateException e) {
             Assert.fail("Endpoint for processing " + classOfT + "\n return error: " + prettyJsonString
@@ -214,15 +236,16 @@ public class GsonFunctions {
         return null;
     }
 
-    public static <T> List<T> parseErrorResponseListToModel(String json, Class<T[]> classOfT){
-        String prettyJsonString = new GsonBuilder().setPrettyPrinting().create().toJson(new JsonParser().parse(json));
+    public static <T> List<T> parseErrorResponseListToModel(Response jsonResponse, Class<T[]> classOfT) {
+        String prettyJsonString = "";
+        String json = jsonResponse.body().asString();
         try {
-            List<T> model = Arrays.asList(new Gson().fromJson(prettyJsonString, (Type) classOfT));
-            if (!((List<ErrorArrayResponse>) model).get(0).isResponseNull()) {
-                return model;
-            } else {
+            prettyJsonString = new GsonBuilder().setPrettyPrinting().create().toJson(new JsonParser().parse(json));
+            if (jsonResponse.getStatusCode() < 400) {
                 Assert.fail("Endpoint for processing class " + classOfT + " didn't return error: " + "data[" +
                         prettyJsonString + "]");
+            } else {
+                return Arrays.asList(new Gson().fromJson(prettyJsonString, (Type) classOfT));
             }
         } catch (IllegalStateException | JsonSyntaxException exception) {
             Assert.fail("Detailed message: " + exception.getMessage() + ", Invalid json format: " + prettyJsonString +
@@ -231,15 +254,16 @@ public class GsonFunctions {
         return null;
     }
 
-    public static <T> T parseErrorResponseToModel(String json, Class<T> classOfT){
-        String prettyJsonString = new GsonBuilder().setPrettyPrinting().create().toJson(new JsonParser().parse(json));
+    public static <T> T parseErrorResponseToModel(Response jsonResponse, Class<T> classOfT){
+        String json = jsonResponse.body().asString();
+        String prettyJsonString = "";
         try {
-            T model = new Gson().fromJson(prettyJsonString, (Type) classOfT);
-            if (!((ErrorResponse) model).isResponseNull()) {
-                return model;
-            } else {
+            prettyJsonString = new GsonBuilder().setPrettyPrinting().create().toJson(new JsonParser().parse(json));
+            if (jsonResponse.getStatusCode() < 400) {
                 Assert.fail("Endpoint for processing class " + classOfT + " didn't return error: " + "data[" +
                         prettyJsonString + "]");
+            } else {
+                return new Gson().fromJson(prettyJsonString, (Type) classOfT);
             }
         } catch (IllegalStateException | JsonSyntaxException exception) {
             Assert.fail("Detailed message: " + exception.getMessage() + ", Invalid json format: " + prettyJsonString +
