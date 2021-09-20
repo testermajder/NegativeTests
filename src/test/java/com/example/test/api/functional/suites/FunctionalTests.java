@@ -1,17 +1,17 @@
 package com.example.test.api.functional.suites;
 
-import com.example.test.api.calls.ExampleAPI;
+import com.example.test.api.calls.UserAPI;
 import com.example.test.api.common.init.TestBase;
 import com.example.test.api.constants.DataProviderNames;
-import com.example.test.api.data.model.example.ExampleRequest;
-import com.example.test.api.data.model.example.ExampleResponse;
-import com.example.test.api.data.model.example.ObjectValue;
-import com.example.test.api.data.provider.ExampleProvider;
-import com.example.test.api.functional.asserts.ExampleAssert;
+import com.example.test.api.data.model.users.create.CreateUserRequest;
+import com.example.test.api.data.model.users.create.CreateUserResponse;
+import com.example.test.api.data.provider.UserProvider;
+import com.example.test.api.functional.asserts.UserAssert;
 import io.qameta.allure.Description;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
+import java.time.LocalDateTime;
+
 // each test class should extend TestBase in order to inherit all common behaviors and to be logged properly in report
 public class FunctionalTests extends TestBase {
 
@@ -19,39 +19,60 @@ public class FunctionalTests extends TestBase {
     // user actions like as those are done manually on UI
     @Test(groups = {"regression", "smoke"})
     @Description("Allure description for this test")
-    public static void createExample() {
-        ExampleRequest createExample = new ExampleRequest("string", true, 1, Arrays.asList("list"),
-                new ObjectValue("property"));
+    public static void verifyCreateUser() {
+        LocalDateTime date = LocalDateTime.now();
 
-        logStep("INFO: Create example");
-        ExampleResponse exampleActual = ExampleAPI.createExample("123456", createExample);
-        logStep("PASS: Example is created");
+        CreateUserRequest createUserRequest = new CreateUserRequest("John Doe" + date, "QA Engineer");
 
-        ExampleResponse exampleExpected = new ExampleResponse();
-        exampleExpected.parseResponse(createExample);
+        logStep("INFO: Create user");
+        CreateUserResponse createdUserActual = UserAPI.createUser(createUserRequest);
+        logStep("PASS: User is created");
 
-        ExampleAssert exampleAssert = new ExampleAssert();
-        logStep("INFO: Verify created example");
-        exampleAssert.assertCreatedNoi(exampleActual, exampleExpected);
-        logStep("PASS: Created example is verified");
+        CreateUserResponse createdUserExpected = CreateUserResponse.parseCreatedUser(createUserRequest);
+
+        UserAssert userAssert = new UserAssert();
+        logStep("INFO: Verify user is created");
+        userAssert.assertCreatedUser(createdUserActual, createdUserExpected);
+        logStep("PASS: Response is verified");
     }
 
     // test case with provider
-    @Test(groups = {"regression", "smoke"}, dataProvider = DataProviderNames.VERIFY_EXAMPLE, dataProviderClass = ExampleProvider.class)
-    @Description("Allure description for this test")
-    public static void providerExample(String methodNameSuffix, String accessToken, String newString) {
+    @Test(groups = {"regression", "smoke"}, dataProvider = DataProviderNames.VERIFY_CREATE_USER, dataProviderClass = UserProvider.class)
+    @Description("Verify can create user")
+    public static void verifyCreateUserWithDataProvider(String methodNameSuffix, CreateUserRequest createUserRequest) {
 
-        logStep("INFO: Create example");
-        ExampleResponse exampleActual = ExampleAPI.anotherCreateExample("accessToken", newString);
-        logStep("PASS: Example is created");
+        logStep("INFO: Create user");
+        CreateUserResponse createdUserActual = UserAPI.createUser(createUserRequest);
+        logStep("PASS: User is created");
 
-        ExampleResponse exampleExpected = new ExampleResponse();
-        exampleExpected.parseResponse(newString);
+        CreateUserResponse createdUserExpected = CreateUserResponse.parseCreatedUser(createUserRequest);
 
-        ExampleAssert exampleAssert = new ExampleAssert();
-        logStep("INFO: Verify created example");
-        exampleAssert.assertCreatedNoi(exampleActual, exampleExpected);
-        logStep("PASS: Created example is verified");
+        UserAssert userAssert = new UserAssert();
+        logStep("INFO: Verify user is created");
+        userAssert.assertCreatedUser(createdUserActual, createdUserExpected);
+        logStep("PASS: Response is verified");
+    }
+
+    @Test
+    //We will send the wrong user id on purpose to get a 404 error from the server
+    public void verifyTestWillReturnError() {
+        UserAPI.getUserById("55");
+    }
+
+    @Test
+    public void verifyAssertWillFail() {
+        LocalDateTime date = LocalDateTime.now();
+        CreateUserRequest createUserRequest = new CreateUserRequest("milos" + date, "QA Engineer");
+        CreateUserResponse actualResponse = UserAPI.createUser(createUserRequest);
+        CreateUserResponse expectedResponse = CreateUserResponse.parseCreatedUser(createUserRequest);
+
+        //We added hardcoded data to fail the assertion on purpose
+        expectedResponse.setName("Made up name");
+
+        UserAssert userAssert = new UserAssert();
+        logStep("INFO: Verify user is created");
+        userAssert.assertCreatedUser(actualResponse, expectedResponse);
+        logStep("PASS: Response is verified");
     }
 
 }

@@ -18,6 +18,11 @@ public class RestAssuredFunctions {
                 .get(uri).then().extract().response();
     }
 
+    public static Response get(String uri) {
+        return given().contentType(ContentType.JSON).when()
+                .get(uri).then().extract().response();
+    }
+
     public static Response get(Object body, String token, String uri) {
         String json = new GsonBuilder().setPrettyPrinting().create().toJson(body);
         return given().contentType(ContentType.JSON).header(GlobalParams.AUTHORIZATION, "Bearer " + token).body(json).when()
@@ -32,6 +37,12 @@ public class RestAssuredFunctions {
 
     public static Response post(String accessToken, String uri) {
         return given().contentType(ContentType.JSON).header(GlobalParams.AUTHORIZATION, "Bearer " + accessToken).when()
+                .post(uri).then().extract().response();
+    }
+
+    public static Response post(Object body, String uri) {
+        String json = new GsonBuilder().setPrettyPrinting().create().toJson(body);
+        return given().contentType(ContentType.JSON).body(json).when()
                 .post(uri).then().extract().response();
     }
 

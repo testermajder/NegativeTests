@@ -1,9 +1,9 @@
-package com.example.test.api.integration.asserts;
+package com.example.test.api.responsevalidation.asserts;
 
 import com.example.test.api.common.ResponseValidation;
 import org.testng.asserts.SoftAssert;
 
-//Asserts used to validate json schema for Integration tests
+//Asserts used to validate json schema for Response Validation tests
 public class CommonAssert {
 
     private SoftAssert softAssert;

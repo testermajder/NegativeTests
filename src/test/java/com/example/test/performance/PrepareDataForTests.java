@@ -1,8 +1,9 @@
 package com.example.test.performance;
 
-import com.example.test.api.calls.ExampleAPI;
+import com.example.test.api.calls.UserAPI;
+import com.example.test.api.common.RandomStringGenerator;
 import com.example.test.api.common.init.TestBase;
-import com.example.test.api.data.model.example.ExampleRequest;
+import com.example.test.api.data.model.users.create.CreateUserRequest;
 import org.testng.annotations.Test;
 
 public class PrepareDataForTests extends TestBase {
@@ -13,7 +14,8 @@ public class PrepareDataForTests extends TestBase {
     @Test(groups = {"performance"})
     public void prepareTestData() {
         logStep("INFO: Add new data for performance user");
-        ExampleAPI.createExample("accessToken", new ExampleRequest());
+        UserAPI.createUser(new CreateUserRequest(RandomStringGenerator.createRandomStringAlphanumericWithLen(5),
+                RandomStringGenerator.createRandomStringAlphabeticWithLen(6)));
         logStep("PASS: Data is added");
     }
 }

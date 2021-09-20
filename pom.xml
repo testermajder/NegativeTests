@@ -129,7 +129,7 @@
         <!--    build profile to customize how will tests bu run-->
         <profile>
             <!-- id is used to simply run tests from command line mvn test -PIntegration -->
-            <id>Integration</id>
+            <id>Tests</id>
             <build>
                 <plugins>
                     <plugin>
