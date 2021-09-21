@@ -1,8 +1,6 @@
 package com.example.test.api.common;
 
 import com.example.test.api.annotations.ResponseRequiredField;
-import com.example.test.api.data.model.common.ErrorArrayResponse;
-import com.example.test.api.data.model.common.ErrorResponse;
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
 import groovy.util.MapEntry;

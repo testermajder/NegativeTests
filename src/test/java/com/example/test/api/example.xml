@@ -16,7 +16,7 @@
             </run>
         </groups>
         <classes>
-            <class name="com.example.test.api.integration.suites.IntegrationTests">
+            <class name="com.example.test.api.responsevalidation.suites.UserValidationTests">
             </class>
             <class name="com.example.test.api.functional.suites.FunctionalTests">
             </class>
