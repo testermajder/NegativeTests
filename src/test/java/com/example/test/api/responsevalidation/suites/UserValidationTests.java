@@ -9,8 +9,8 @@ import com.example.test.api.responsevalidation.asserts.CommonAssert;
 import io.qameta.allure.Description;
 import org.testng.annotations.Test;
 
-// example for integration test
-public class ResponseValidationTests extends TestBase {
+// example for response validation test
+public class UserValidationTests extends TestBase {
 
     @Test(groups = {"integration"})
     @Description("Allure description for this test")

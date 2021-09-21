@@ -14,9 +14,9 @@ public class UserProvider {
     public static Object[][] verifyCreateUser() {
         LocalDateTime date = LocalDateTime.now();
         return new Object[][]{
-                {"FirstTestDataCombination", new CreateUserRequest(RandomStringGenerator.createRandomStringAlphanumericWithLen(5),
+                {"WithRandomNameAndJob", new CreateUserRequest(RandomStringGenerator.createRandomStringAlphanumericWithLen(5),
                         RandomStringGenerator.createRandomStringAlphanumericWithLen(5))},
-                {"SecondTestDataCombination", new CreateUserRequest("Jason Kidd " + date.toString(),
+                {"AsQaAutomationEngineer", new CreateUserRequest("Jason Kidd " + date,
                         "QA Automation Engineer")},
         };
     }
