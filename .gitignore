@@ -276,3 +276,7 @@ htec-ga-java-template.iml
 
 /.idea/
 /htec-qa-java-template.iml
+/api-client/api-client.iml
+/api-tests/api-tests.iml
+/e2e/e2e.iml
+/performance/performance.iml
