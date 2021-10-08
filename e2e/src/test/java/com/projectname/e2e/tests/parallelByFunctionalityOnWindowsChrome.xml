@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Parallel tests by Functionality on Windows / Chrome" configfailurepolicy="continue" thread-count="8" parallel="tests">
+    <!-- project parameters -->
+    <parameter name="project" value="E2E Tests"/>
+    <parameter name="localRun" value="false"/>
+
+    <test name="Functionality1">
+        <parameter name="env_cap_id" value="0"/>
+        <groups>
+            <run>
+                <include name="regression"/>
+                <include name="smoke"/>
+                <include name="knownBugs"/>
+                <include name="security"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.projectname.e2e.tests.suites.login.LoginTests"/>
+        </classes>
+    </test>
+    <test name="Functionality2">
+        <parameter name="env_cap_id" value="0"/>
+        <groups>
+            <run>
+                <include name="regression"/>
+                <include name="smoke"/>
+                <include name="knownBugs"/>
+                <include name="security"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.projectname.e2e.tests.suites.login.LoginTests"/>
+        </classes>
+    </test>
+
+    <test name="Functionality3">
+        <parameter name="env_cap_id" value="0"/>
+        <groups>
+            <run>
+                <include name="regression"/>
+                <include name="smoke"/>
+                <include name="knownBugs"/>
+                <include name="security"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.projectname.e2e.tests.suites.login.LoginTests"/>
+        </classes>
+    </test>
+
+</suite>
