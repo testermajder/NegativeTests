@@ -139,8 +139,8 @@ buildNumber.properties
 # .idea/modules.xml
 # .idea/*.iml
 # .idea/modules
-# *.iml
-# *.ipr
+ *.iml
+ *.ipr
 
 # CMake
 cmake-build-*/
@@ -268,9 +268,15 @@ local.properties
 /allure-report/
 /allure-results/*
 /allure-report/*
+api-tests/allure-results
+e2e/allure-results
 
 htec-ga-java-template.iml
 
 
 /.idea/
 /htec-qa-java-template.iml
+/api-client/api-client.iml
+/api-tests/api-tests.iml
+/e2e/e2e.iml
+/performance/performance.iml

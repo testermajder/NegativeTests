@@ -1,0 +1,7 @@
+[
+  {
+    "name": "Known issues",
+    "matchedStatuses": ["broken", "failed", "skipped"],
+    "messageRegex": ".*known issue.*"
+  }
+]

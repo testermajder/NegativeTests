@@ -1,0 +1,54 @@
+{
+  "capabilities": {
+    "common_caps": {
+      "project": "e2e",
+      "build": "build",
+      "name": "Tests",
+      "browserstack.debug": "true",
+      "browserstack.networkLogs": "true",
+      "browserstack.console": "verbose"
+    },
+    "env_caps": [
+      {
+        "os": "Windows",
+        "os_version": "10",
+        "browser": "Chrome",
+        "browser_version": "latest",
+        "browserstack.selenium_version": "3.141.59",
+        "browserstack.sendKeys": true
+      },
+      {
+        "os": "Windows",
+        "os_version": "10",
+        "browser": "Firefox",
+        "browser_version": "latest",
+        "browserstack.selenium_version": "3.141.59",
+        "browserstack.sendKeys": true
+      },
+      {
+        "os": "Windows",
+        "os_version": "10",
+        "browser": "Edge",
+        "browser_version": "latest",
+        "browserstack.selenium_version": "3.141.59",
+        "browserstack.sendKeys": true
+      },
+      {
+        "os": "OS X",
+        "os_version": "Big Sur",
+        "browser": "Chrome",
+        "browser_version": "latest",
+        "browserstack.selenium_version": "3.141.59",
+        "browserstack.sendKeys": true
+      },
+      {
+        "os": "OS X",
+        "os_version": "Catalina",
+        "browser": "Chrome",
+        "browser_version": "latest",
+        "browserstack.selenium_version": "3.141.59",
+        "browserstack.sendKeys": true
+      }
+    ]
+  }
+}
