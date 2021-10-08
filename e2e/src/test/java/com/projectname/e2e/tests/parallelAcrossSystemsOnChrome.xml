@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Parallel tests Across Systems / Chrome" configfailurepolicy="continue" thread-count="8" parallel="tests">
+    <!-- project parameters -->
+    <parameter name="project" value="E2E Tests"/>
+    <parameter name="localRun" value="false"/>
+
+    <test name="Suite1">
+        <parameter name="env_cap_id" value="0"/>
+        <parameter name="platform" value="WindowsChrome"/>
+        <groups>
+            <run>
+                <include name="regression"/>
+                <include name="smoke"/>
+                <include name="knownBugs"/>
+                <include name="security"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.projectname.e2e.tests.suites.login.LoginTests"/>
+        </classes>
+    </test>
+    <test name="Suite2">
+        <parameter name="env_cap_id" value="3"/>
+        <parameter name="platform" value="OSXBigSurChrome"/>
+        <groups>
+            <run>
+                <include name="regression"/>
+                <include name="smoke"/>
+                <include name="knownBugs"/>
+                <include name="security"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.projectname.e2e.tests.suites.login.LoginTests"/>
+        </classes>
+    </test>
+    <test name="Suite3">
+        <parameter name="env_cap_id" value="4"/>
+        <parameter name="platform" value="OSXCatalinaChrome"/>
+        <groups>
+            <run>
+                <include name="regression"/>
+                <include name="smoke"/>
+                <include name="knownBugs"/>
+                <include name="security"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.projectname.e2e.tests.suites.login.LoginTests"/>
+        </classes>
+    </test>
+
+</suite>

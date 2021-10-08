@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Performance" configfailurepolicy="continue">
+    <!-- project parameters -->
+    <parameter name="project" value="test.example.com"/>
+    <parameter name="version" value="1.0.0"/>
+
+
+    <test name="Performance">
+        <groups>
+            <run>
+                <include name="performance"/>
+            </run>
+
+        </groups>
+        <classes>
+            <class name="com.projectname.performance.tests.PrepareDataForTests">
+            </class>
+        </classes>
+    </test>
+
+
+</suite>

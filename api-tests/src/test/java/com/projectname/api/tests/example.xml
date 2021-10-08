@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="ExampleName" parallel="tests" thread-count="8" configfailurepolicy="continue">
+    <!-- project parameters -->
+    <parameter name="project" value="htecqa"/>
+    <parameter name="version" value="1.0.0"/>
+
+    <!-- define test groups and classes that should be included in this run configuration -->
+    <test name="Example">
+        <groups>
+            <run>
+                <include name="regression"/>
+                <include name="smoke"/>
+                <include name="knownBugs"/>
+                <include name="integration"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.projectname.api.tests.responsevalidation.suites.UserValidationTests">
+            </class>
+            <class name="com.projectname.api.tests.functional.suites.FunctionalTests">
+            </class>
+        </classes>
+    </test>
+</suite>
