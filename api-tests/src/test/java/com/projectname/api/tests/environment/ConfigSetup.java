@@ -33,4 +33,10 @@ public class ConfigSetup extends ConfigReader {
         return getValue("DB_URL");
     }
 
+    public static String getMainUser() {return getValue("MAIN_USER"); }
+
+    public static String getSecondUser() { return getValue("SECOND_USER"); }
+
+    public static String getPass() { return getValue("PASSWORD"); }
+
 }

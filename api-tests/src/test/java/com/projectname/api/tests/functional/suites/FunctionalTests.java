@@ -3,6 +3,8 @@ package com.projectname.api.tests.functional.suites;
 import com.projectname.api.client.calls.UserAPI;
 import com.projectname.api.client.data.model.users.create.CreateUserRequest;
 import com.projectname.api.client.data.model.users.create.CreateUserResponse;
+import com.projectname.api.client.data.model.users.update.UpdateUserRequest;
+import com.projectname.api.client.data.model.users.update.UpdateUserResponse;
 import com.projectname.api.tests.constants.DataProviderNames;
 import com.projectname.api.tests.data.provider.UserProvider;
 import com.projectname.api.tests.functional.asserts.UserAssert;
@@ -53,6 +55,31 @@ public class FunctionalTests extends TestBase {
         logStep("INFO: Verify user is created");
         userAssert.assertCreatedUser(createdUserActual, createdUserExpected);
         logStep("PASS: Response is verified");
+    }
+    @Test()
+    @Description("Verify can update user")
+    public static void verifyUpdateUser() {
+        CreateUserResponse userResponse = UserAPI.createUser(new CreateUserRequest("John Doe", "QA Engineer"));
+
+        UpdateUserRequest userRequest = new UpdateUserRequest("Stefan", "QA");
+
+        UpdateUserResponse actualUpdateUserResponse = UserAPI.updateUser(userRequest, userResponse.getId());
+
+        UpdateUserResponse expectedUpdateUserResponse = UpdateUserResponse.parseExpectedUserResponse(userRequest);
+
+        UserAssert userAssert = new UserAssert();
+        userAssert.assertUpdateUser(actualUpdateUserResponse, expectedUpdateUserResponse);
+
+    }
+    @Test(dataProvider = DataProviderNames.VERIFY_UPDATE_USER, dataProviderClass = UserProvider.class)
+    @Description("Verify can update user")
+    public static void verifyUpdateUserWithProvider(String suffix, UpdateUserRequest userRequest, String userId) {
+        UpdateUserResponse actualResponse = UserAPI.updateUser(userRequest, userId);
+
+        UpdateUserResponse expectedResponse = UpdateUserResponse.parseExpectedUserResponse(userRequest);
+
+        UserAssert userAssert = new UserAssert();
+        userAssert.assertUpdateUser(actualResponse, expectedResponse);
     }
 
     @Test

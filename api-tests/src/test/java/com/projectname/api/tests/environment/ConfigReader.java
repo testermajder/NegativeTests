@@ -31,7 +31,7 @@ public class ConfigReader {
         System.out.println(currentEnv);
         //there is no test and staging env for example.com sample, so that's why by default we set PROD. In real example you would like to set it to your TEST env
         String env = currentEnv != null && !currentEnv.isEmpty() ? currentEnv : PROD;
-        String base_url = "https://" + env + "reqres.in/";
+        String base_url = "https://" + env + "test-api.k6.io/";
         System.out.println(base_url);
         return base_url;
     }

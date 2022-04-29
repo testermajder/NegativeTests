@@ -1,5 +1,7 @@
 package com.projectname.api.client.utils;
 
+import org.apache.commons.lang3.RandomUtils;
+
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -75,5 +77,10 @@ public class Dates {
     public static LocalDateTime getCurrentDateTimeInQuinyxTimeZone() {
 
         return ZonedDateTime.now(ZoneId.of("Europe/Stockholm")).toLocalDateTime();
+    }
+
+    public static String getRandomDate() {
+
+        return LocalDate.now().minusWeeks(RandomUtils.nextInt(10, 100)).toString();
     }
 }
